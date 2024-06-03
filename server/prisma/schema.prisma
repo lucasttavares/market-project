@@ -58,8 +58,7 @@ model UserClient {
   number       Int      @db.Integer
   coordinates  String[] @db.VarChar()
   order        Order[]
-
-  profile Role @default(CLIENT)
+  profile      Role     @default(CLIENT)
 
   @@map("clients")
 }

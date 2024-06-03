@@ -6,7 +6,7 @@ const adminRouter = Router();
 
 adminRouter.post(
   '/register',
-  AuthMiddleware.routeFilter,
+  // AuthMiddleware.routeFilter,
   adminFactory().register,
 );
 

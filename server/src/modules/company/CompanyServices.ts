@@ -3,13 +3,17 @@ import CompanyRespository from '../../entities/CompanyRepository';
 import bcrypt from 'bcrypt';
 import HttpStatusCode from '../../utils/enum/httpStatusCode';
 import TokenManipulator from '../../utils/TokenManipulator';
+import ProductRepository from '../../entities/ProductRepository';
 
 export default class CompanyServices {
-  constructor(private readonly repository: CompanyRespository) {}
+  constructor(
+    private readonly companyRepository: CompanyRespository,
+    private readonly productRepository: ProductRepository,
+  ) {}
 
   async save(data: Prisma.UserCompanyCreateInput) {
     const hashedPassorwd = await bcrypt.hash(data.password, 10);
-    const createdCompany = await this.repository.create({
+    const createdCompany = await this.companyRepository.create({
       ...data,
       password: hashedPassorwd,
     });
@@ -18,7 +22,7 @@ export default class CompanyServices {
   }
 
   async isFounded(email: string) {
-    const company = await this.repository.findByEmail(email);
+    const company = await this.companyRepository.findByEmail(email);
     if (!company) {
       throw {
         status: HttpStatusCode.NOT_FOUND,
@@ -29,7 +33,7 @@ export default class CompanyServices {
   }
 
   async verifyCredentials(email: string, password: string) {
-    const company = await this.repository.findByEmail(email);
+    const company = await this.companyRepository.findByEmail(email);
     let companyExists = true;
 
     if (!company) {
@@ -54,5 +58,12 @@ export default class CompanyServices {
     return {
       access_token: TokenManipulator.generateToken(company),
     };
+  }
+
+  async verifyProductExists(id: string) {
+    const product = await this.productRepository.findById(id);
+    if (!product) {
+      throw new Error();
+    }
   }
 }
