@@ -42,5 +42,5 @@ model UserClient {
   password String @db.VarChar(255)
   profile  Role   @default(CLIENT)
 
-  @@map("users")
+  @@map("clients")
 }
