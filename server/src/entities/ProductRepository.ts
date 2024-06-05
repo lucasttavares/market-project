@@ -2,7 +2,7 @@ import { Prisma } from '@prisma/client';
 import prismaClient from '../infra/prismaClient';
 
 export default class ProductRepository {
-  async create(data: Prisma.ProductCreateInput) {
+  async create(data: Prisma.ProductCreateInput,) {
     return await prismaClient.product.create({ data });
   }
 

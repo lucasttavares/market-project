@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import HttpStatusCode from '../../utils/enum/httpStatusCode';
 import CompanyServices from './CompanyServices';
 import ProductRepository from '../../entities/ProductRepository';
+import fs from 'fs';
 
 export default class CompanyController {
   constructor(
@@ -40,10 +41,16 @@ export default class CompanyController {
 
   createProduct = async (req: Request, res: Response) => {
     const product = req.body;
+    const image = req.file;
     try {
-      return res
-        .status(HttpStatusCode.CREATED)
-        .send(await this.productRepository.create(product));
+      return res.status(HttpStatusCode.CREATED).send(
+        await this.productRepository.create({
+          ...product,
+          price: Number(product.price),
+          units: Number(product.units),
+          image: image?.path,
+        }),
+      );
     } catch (error) {
       return res.status(HttpStatusCode.BAD_REQUEST).send(error);
     }

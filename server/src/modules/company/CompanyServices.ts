@@ -26,7 +26,7 @@ export default class CompanyServices {
     if (!company) {
       throw {
         status: HttpStatusCode.NOT_FOUND,
-        message: { error: 'company not fount' },
+        message: { error: 'Company not fount' },
       };
     }
     return company;
@@ -43,7 +43,7 @@ export default class CompanyServices {
     if (!companyExists) {
       throw {
         status: HttpStatusCode.NOT_FOUND,
-        message: { error: 'company not found' },
+        message: { error: 'Company not found' },
       };
     }
 

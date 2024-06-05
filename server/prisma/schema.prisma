@@ -64,14 +64,14 @@ model UserClient {
 }
 
 model Product {
-  id          String @id @default(uuid())
-  name        String @db.VarChar(255)
-  bar_code    String @unique @db.VarChar(255)
-  category    String @db.VarChar(255)
-  description String @db.VarChar(255)
-  price       Int    @db.Integer
-  units       Int    @db.Integer
-  image       String @db.VarChar(255)
+  id          String  @id @default(uuid())
+  name        String  @db.VarChar(255)
+  bar_code    String  @unique @db.VarChar(255)
+  category    String  @db.VarChar(255)
+  description String  @db.VarChar(255)
+  price       Int     @db.Integer
+  units       Int     @db.Integer
+  image       String? @db.VarChar(255)
 
   @@map("products")
 }
