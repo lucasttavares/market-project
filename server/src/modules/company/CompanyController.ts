@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import HttpStatusCode from '../../utils/enum/httpStatusCode';
 import CompanyServices from './CompanyServices';
 import ProductRepository from '../../entities/ProductRepository';
-import fs from 'fs';
 
 export default class CompanyController {
   constructor(
@@ -74,6 +73,20 @@ export default class CompanyController {
         .status(HttpStatusCode.NOT_FOUND)
         .send({ error: 'Product not found' });
     }
+  };
+
+  findProductByName = async (req: Request, res: Response) => {
+    const name = req.params.name;
+    return res
+      .status(HttpStatusCode.OK)
+      .send(await this.productRepository.findByName(name));
+  };
+
+  findProductByCategory = async (req: Request, res: Response) => {
+    const category = req.params.category;
+    return res
+      .status(HttpStatusCode.OK)
+      .send(await this.productRepository.findByCategory(category));
   };
 
   updateProduct = async (req: Request, res: Response) => {

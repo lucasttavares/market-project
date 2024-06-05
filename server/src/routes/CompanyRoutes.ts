@@ -32,6 +32,18 @@ companyRouter.get(
   companyFactory().findProductById,
 );
 
+companyRouter.get(
+  '/product/find-by-name/:name',
+  AuthMiddleware.routeFilter,
+  companyFactory().findProductByName,
+);
+
+companyRouter.get(
+  '/product/find-by-category/:category',
+  AuthMiddleware.routeFilter,
+  companyFactory().findProductByCategory,
+);
+
 companyRouter.patch(
   '/product/update/:id',
   AuthMiddleware.routeFilter,
