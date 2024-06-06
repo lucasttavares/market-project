@@ -2,11 +2,13 @@ import { Request, Response } from 'express';
 import HttpStatusCode from '../../utils/enum/httpStatusCode';
 import CompanyServices from './CompanyServices';
 import ProductRepository from '../../entities/ProductRepository';
+import OrderRepository from '../../entities/OrderRepository';
 
 export default class CompanyController {
   constructor(
     private readonly companyServices: CompanyServices,
     private readonly productRepository: ProductRepository,
+    private readonly orderRepository: OrderRepository,
   ) {}
 
   register = async (req: Request, res: Response) => {
@@ -114,6 +116,41 @@ export default class CompanyController {
       return res
         .status(HttpStatusCode.NOT_FOUND)
         .send({ error: 'Product not found' });
+    }
+  };
+
+  cancelOrder = async (req: Request, res: Response) => {
+    const code = req.params.code;
+    try {
+      await this.companyServices.verifyOrderExists(code);
+      return res
+        .status(HttpStatusCode.OK)
+        .send(await this.orderRepository.cancel(code));
+    } catch (error) {
+      return res
+        .status(HttpStatusCode.NOT_FOUND)
+        .send({ error: 'Order not found' });
+    }
+  };
+
+  nextOrderStatus = async (req: Request, res: Response) => {
+    const code = req.params.code;
+    const orderExists = await this.orderRepository.findByCode(code);
+    if (!orderExists) {
+      return res
+        .status(HttpStatusCode.NOT_FOUND)
+        .send({ error: 'Order not found' });
+    }
+
+    try {
+      await this.companyServices.verifyOrderStatus(code);
+      return res
+        .status(HttpStatusCode.OK)
+        .send(await this.orderRepository.updateStatus(code));
+    } catch (error) {
+      return res
+        .status(HttpStatusCode.BAD_REQUEST)
+        .send({ error: 'Order already completed' });
     }
   };
 }

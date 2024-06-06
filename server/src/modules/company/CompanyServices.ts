@@ -4,11 +4,13 @@ import bcrypt from 'bcrypt';
 import HttpStatusCode from '../../utils/enum/httpStatusCode';
 import TokenManipulator from '../../utils/TokenManipulator';
 import ProductRepository from '../../entities/ProductRepository';
+import OrderRepository from '../../entities/OrderRepository';
 
 export default class CompanyServices {
   constructor(
     private readonly companyRepository: CompanyRespository,
     private readonly productRepository: ProductRepository,
+    private readonly orderRepository: OrderRepository,
   ) {}
 
   async save(data: Prisma.UserCompanyCreateInput) {
@@ -63,6 +65,20 @@ export default class CompanyServices {
   async verifyProductExists(id: string) {
     const product = await this.productRepository.findById(id);
     if (!product) {
+      throw new Error();
+    }
+  }
+
+  async verifyOrderExists(code: string) {
+    const order = await this.orderRepository.findByCode(code);
+    if (!order) {
+      throw new Error();
+    }
+  }
+
+  async verifyOrderStatus(code: string) {
+    const order = await this.orderRepository.findByCode(code);
+    if (order!.status >= 4) {
       throw new Error();
     }
   }

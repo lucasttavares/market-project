@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "orders" ALTER COLUMN "code" SET DATA TYPE VARCHAR(255);

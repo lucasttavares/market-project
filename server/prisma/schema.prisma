@@ -78,7 +78,7 @@ model Product {
 
 model Order {
   id               String       @id @default(uuid())
-  code             Int          @db.Integer
+  code             String       @unique @db.VarChar(255)
   products         String[]     @db.VarChar()
   buyer            UserClient?  @relation(fields: [userClientId], references: [id])
   userClientId     String?
@@ -87,7 +87,7 @@ model Order {
   destination      String       @db.VarChar(255)
   status           Int          @default(0) @db.Integer
   payment          String       @db.VarChar(255)
-  delivery_Options Int          @default(0) @db.Integer
+  delivery_options Int          @default(0) @db.Integer
 
   @@map("orders")
 }

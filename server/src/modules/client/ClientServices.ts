@@ -3,13 +3,17 @@ import ClientRepository from '../../entities/ClientRepository';
 import bcrypt from 'bcrypt';
 import HttpStatusCode from '../../utils/enum/httpStatusCode';
 import TokenManipulator from '../../utils/TokenManipulator';
+import OrderRepository from '../../entities/OrderRepository';
 
 export default class ClientServices {
-  constructor(private readonly repository: ClientRepository) {}
+  constructor(
+    private readonly clientRepository: ClientRepository,
+    private readonly orderRepository: OrderRepository,
+  ) {}
 
   async save(data: Prisma.UserClientCreateInput) {
     const hashedPassorwd = await bcrypt.hash(data.password, 10);
-    const createdClient = await this.repository.create({
+    const createdClient = await this.clientRepository.create({
       ...data,
       password: hashedPassorwd,
     });
@@ -18,7 +22,7 @@ export default class ClientServices {
   }
 
   async isFounded(email: string) {
-    const client = await this.repository.findByEmail(email);
+    const client = await this.clientRepository.findByEmail(email);
     if (!client) {
       throw {
         status: HttpStatusCode.NOT_FOUND,
@@ -29,7 +33,7 @@ export default class ClientServices {
   }
 
   async verifyCredentials(email: string, password: string) {
-    const client = await this.repository.findByEmail(email);
+    const client = await this.clientRepository.findByEmail(email);
     let clientExists = true;
 
     if (!client) {
@@ -54,5 +58,12 @@ export default class ClientServices {
     return {
       access_token: TokenManipulator.generateToken(client),
     };
+  }
+
+  async verifyOrderExists(code: string) {
+    const order = await this.orderRepository.findByCode(code);
+    if (!order) {
+      throw new Error();
+    }
   }
 }

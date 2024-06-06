@@ -56,4 +56,16 @@ companyRouter.delete(
   companyFactory().deleteProduct,
 );
 
+companyRouter.delete(
+  '/order/cancel/:code',
+  AuthMiddleware.routeFilter,
+  companyFactory().cancelOrder,
+);
+
+companyRouter.patch(
+  '/order/update-status/:code',
+  AuthMiddleware.routeFilter,
+  companyFactory().nextOrderStatus,
+);
+
 export { companyRouter };
