@@ -38,6 +38,7 @@ model UserCompany {
   coordinates  String[] @db.VarChar()
   delivery     Int      @db.Integer
   payment      String[] @db.VarChar()
+  image        String?  @db.VarChar(255)
   profile      Role     @default(COMPANY)
   order        Order[]
 

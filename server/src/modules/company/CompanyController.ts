@@ -125,11 +125,11 @@ export default class CompanyController {
       await this.companyServices.verifyOrderExists(code);
       return res
         .status(HttpStatusCode.OK)
-        .send(await this.orderRepository.cancel(code));
-    } catch (error) {
+        .send(await this.companyServices.confirmCancel(code));
+    } catch (error: any) {
       return res
-        .status(HttpStatusCode.NOT_FOUND)
-        .send({ error: 'Order not found' });
+        .status(HttpStatusCode.BAD_REQUEST)
+        .send({ error: 'Error when cancel order' });
     }
   };
 

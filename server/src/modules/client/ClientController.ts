@@ -43,9 +43,9 @@ export default class ClientController {
     try {
       return res
         .status(HttpStatusCode.CREATED)
-        .send(await this.orderRepository.create(order));
-    } catch (error) {
-      return res.status(HttpStatusCode.BAD_REQUEST).send(error);
+        .send(await this.clientServices.confirmOder(order.products, order));
+    } catch (error: any) {
+      return res.status(HttpStatusCode.BAD_REQUEST).send(error.message);
     }
   };
 

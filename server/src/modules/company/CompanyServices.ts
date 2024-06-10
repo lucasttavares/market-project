@@ -82,4 +82,23 @@ export default class CompanyServices {
       throw new Error();
     }
   }
+
+  async confirmCancel(code: string) {
+    const order = await this.orderRepository.findByCode(code);
+
+    if (order?.status === 5) {
+      throw new Error();
+    }
+
+    for (let i = 0; i < order!.products.length; i++) {
+      const product: any = await this.productRepository.findById(
+        order!.products[i],
+      );
+      await this.productRepository.update(product.id, {
+        units: (product.units += 1),
+      });
+    }
+
+    return await this.orderRepository.cancel(code);
+  }
 }

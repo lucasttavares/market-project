@@ -1,14 +1,16 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, Product } from '@prisma/client';
 import ClientRepository from '../../entities/ClientRepository';
 import bcrypt from 'bcrypt';
 import HttpStatusCode from '../../utils/enum/httpStatusCode';
 import TokenManipulator from '../../utils/TokenManipulator';
 import OrderRepository from '../../entities/OrderRepository';
+import ProductRepository from '../../entities/ProductRepository';
 
 export default class ClientServices {
   constructor(
     private readonly clientRepository: ClientRepository,
     private readonly orderRepository: OrderRepository,
+    private readonly productRepository: ProductRepository,
   ) {}
 
   async save(data: Prisma.UserClientCreateInput) {
@@ -64,6 +66,38 @@ export default class ClientServices {
     const order = await this.orderRepository.findByCode(code);
     if (!order) {
       throw new Error();
+    }
+  }
+
+  async confirmOder(products: string[], order: Prisma.OrderCreateInput) {
+    try {
+      const orderExists = await this.orderRepository.findByCode(order.code);
+      if (orderExists) {
+        throw new Error('Order already exists');
+      }
+
+      for (let i = 0; i < products.length; i++) {
+        const product = await this.productRepository.findById(products[i]);
+
+        if (!product) {
+          throw new Error(`Product ${products[i]} not found`);
+        }
+        if (product.units <= 0) {
+          throw new Error(`Product ${products[i]} not available`);
+        }
+      }
+
+      for (let i = 0; i < products.length; i++) {
+        const product: any = await this.productRepository.findById(products[i]);
+
+        await this.productRepository.update(product.id, {
+          units: (product.units -= 1),
+        });
+      }
+
+      return await this.orderRepository.create(order);
+    } catch (error) {
+      throw { message: { error: `${error as Error}` } };
     }
   }
 }
