@@ -13,10 +13,16 @@ export default class CompanyController {
 
   register = async (req: Request, res: Response) => {
     const company = req.body;
+    const image = req.file;
     try {
-      return res
-        .status(HttpStatusCode.CREATED)
-        .send(await this.companyServices.save(company));
+      return res.status(HttpStatusCode.CREATED).send(
+        await this.companyServices.save({
+          ...company,
+          image: image?.path,
+          number: Number(company.number),
+          delivery: Number(company.delivery),
+        }),
+      );
     } catch (error) {
       console.log(error);
       return res.status(HttpStatusCode.BAD_REQUEST).send(error);

@@ -8,6 +8,7 @@ const companyRouter = Router();
 companyRouter.post(
   '/register',
   AuthMiddleware.routeFilter,
+  upload.single('image'),
   companyFactory().register,
 );
 

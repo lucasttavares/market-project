@@ -17,6 +17,7 @@ export default class CompanyServices {
     const hashedPassorwd = await bcrypt.hash(data.password, 10);
     const createdCompany = await this.companyRepository.create({
       ...data,
+      image: data.image,
       password: hashedPassorwd,
     });
 
